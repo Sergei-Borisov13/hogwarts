@@ -1,34 +1,43 @@
 package ru.hogwarts.school.service;
 
+
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.HashMap;
+import java.util.Collection;
+
 
 @Service
 public class FacultyService {
-    private final HashMap<Long, Faculty> faculties = new HashMap<>();
-    private Long count;
+    private final FacultyRepository facultyRepository;
+
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     public Faculty addFaculty(Faculty faculty) {
-        faculty.setId(++count);
-        faculties.put(faculty.getId(), faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Faculty findFaculty(Long id) {
-        return faculties.get(id);
+
+        return facultyRepository.findById(id).get();
     }
 
     public Faculty editFaculty(Faculty faculty) {
-        if (!faculties.containsKey(faculty.getId())) {
-            return null;
-        }
-        faculties.put(faculty.getId(), faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
-    public Faculty deleteFaculty(Long id) {
-        return faculties.remove(id);
+    public void deleteFaculty(Long id) {
+        facultyRepository.deleteById(id);
+    }
+
+   public Collection<Faculty> findByColor(String color) {
+        return facultyRepository.findByColor(color);
+   }
+
+    public Collection<Faculty> getAllFaculties() {
+        return facultyRepository.findAll();
     }
 }
