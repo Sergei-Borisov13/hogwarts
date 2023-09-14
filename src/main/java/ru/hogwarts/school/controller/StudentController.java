@@ -20,7 +20,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{id}") // поиск студента
     public ResponseEntity<Student> getStudentInfo(@PathVariable Long id) {
         Student student = studentService.findStudent(id);
         if (student == null) {
@@ -29,12 +29,32 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
-    @PostMapping
+    @GetMapping("age") // поиск по возрасту
+    public ResponseEntity<Collection<Student>> findStudents(@RequestParam(required = false) int age) {
+        if (age > 0) {
+            return ResponseEntity.ok(studentService.findByAge(age));
+        }
+        return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    @GetMapping // поиск в промежутку возрастов
+    public ResponseEntity<Collection<Student>> findByAgeBetween(@RequestParam(required = false) int min,
+                                                                @RequestParam(required = false) int max) {
+        return ResponseEntity.ok(studentService.findByAgeBetween(min, max));
+    }
+
+    @GetMapping("all") // все студенты
+    public ResponseEntity<Collection<Student>> GetAllStudents() {
+        Collection<Student> students = studentService.getAllStudents();
+        return ResponseEntity.ok(students);
+    }
+
+    @PostMapping // добавить студента
     public Student createStudent(@RequestBody Student student) {
         return studentService.addStudent(student);
     }
 
-    @PutMapping
+    @PutMapping // изменить студента
     public ResponseEntity<Student> editStudent(@RequestBody Student student) {
         Student foundStudent = studentService.editStudent(student);
         if (foundStudent == null) {
@@ -43,25 +63,15 @@ public class StudentController {
         return ResponseEntity.ok(foundStudent);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{id}") // удалить
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("age")
-    public ResponseEntity<Collection<Student>> findStudents(@RequestParam(required = false) int age) {
-        if (age > 0) {
-            return ResponseEntity.ok(studentService.findByAge(age));
-        }
-        return ResponseEntity.ok(Collections.emptyList());
+    @GetMapping("studentsFaculty") //студенты факультета
+    public ResponseEntity<Collection<Student>> findByStudentsFaculty(@RequestParam Long id) {
+        return ResponseEntity.ok(studentService.findByStudentsFaculty(id));
     }
-
-    @GetMapping("all")
-    public ResponseEntity<Collection<Student>> GetAllStudents() {
-        Collection<Student> students = studentService.getAllStudents();
-        return ResponseEntity.ok(students);
-    }
-
 
 }
