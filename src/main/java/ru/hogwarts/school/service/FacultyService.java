@@ -8,7 +8,6 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 
 @Service
@@ -24,13 +23,7 @@ public class FacultyService {
     }
 
     public Faculty findFaculty(Long id) {
-        Optional<Faculty> faculty = facultyRepository.findById(id);
-        if (faculty.isPresent()) {
-            return faculty.get();
-        } else {
-            throw new NotFoundException();
-        }
-
+        return facultyRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public Faculty editFaculty(Faculty faculty) {
@@ -39,7 +32,7 @@ public class FacultyService {
 
     public Faculty deleteFaculty(Long id) {
         Faculty faculty = findFaculty(id);
-        facultyRepository.deleteById(id);
+        facultyRepository.delete(faculty);
         return faculty;
     }
 
@@ -52,7 +45,9 @@ public class FacultyService {
     }
 
     public Collection<Student> findByStudentsFaculty(Long id) {
-        return facultyRepository.findById(id).get().getStudents();
+        return facultyRepository.findById(id)
+                .map(Faculty::getStudents)
+                .orElse(null);
     }
 
 }
