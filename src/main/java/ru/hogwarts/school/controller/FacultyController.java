@@ -56,7 +56,7 @@ public class FacultyController {
         return ResponseEntity.ok(faculties);
     }
 
-    @GetMapping // поиск по имени или цвету
+    @GetMapping ("find")// поиск по имени или цвету
     public ResponseEntity<Collection<Faculty>> getColorOrName(@RequestParam String nameOrColor) {
         return ResponseEntity.ok(facultyService.findByNameOrColor(nameOrColor));
     }
