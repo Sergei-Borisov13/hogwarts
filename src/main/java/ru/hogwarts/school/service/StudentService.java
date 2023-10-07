@@ -53,4 +53,16 @@ public class StudentService {
                 .orElse(null);
     }
 
+    public Integer getCount() {
+        return studentRepository.getCount();
+    }
+
+    public Float getAverageAge() {
+        return studentRepository.getAverageAge();
+    }
+
+    public Collection<Student> getLastFive() {
+        return studentRepository.getLastFive();
+    }
+
 }
