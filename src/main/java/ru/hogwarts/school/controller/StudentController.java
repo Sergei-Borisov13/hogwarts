@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/student")
+@Tag(name = "API для работы с студентами")
 public class StudentController {
 
     private final StudentService studentService;
@@ -112,6 +114,20 @@ public class StudentController {
     @Operation(summary = "Получение среднего возраста студентов")
     public ResponseEntity<Double> getAverageAgeOfAllStudentsWithStreams() {
         return ResponseEntity.ok(studentService.getAverageAgeOfAllStudentsWithStreams());
+    }
+
+    @GetMapping("/printInConsoleListOfStudentsNamesWithThreads")
+    @Operation(summary = "Печать студентов  в консоль")
+    public ResponseEntity<String> printInConsoleListOfStudentsNamesWithThreads() {
+        studentService.printInConsoleListOfStudentsNamesWithThreads();
+        return ResponseEntity.ok("Результат в консоли");
+    }
+
+    @GetMapping("/printInConsoleListOfStudentsNamesWithSynchronizedThreads")
+    @Operation(summary = "Печать студентов  в консоль")
+    public ResponseEntity<String> printInConsoleListOfStudentsNamesWithSynchronizedThreads() {
+        studentService.printInConsoleListOfStudentsNamesWithSynchronizedThreads();
+        return ResponseEntity.ok("Результат в консоли");
     }
 
 }

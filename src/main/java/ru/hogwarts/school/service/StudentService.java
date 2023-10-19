@@ -17,6 +17,7 @@ import java.util.List;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private volatile Integer count = 0;
 
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -94,6 +95,47 @@ public class StudentService {
                 .mapToDouble(Student::getAge)
                 .average()
                 .orElse(Double.NaN);
+    }
+
+    public void printInConsoleListOfStudentsNamesWithThreads() {
+        logger.info("Was invoked method print in console list of students names with threads");
+        List<Student> studentList = studentRepository.findAll();
+
+        System.out.println(studentList.get(1).getName());
+        System.out.println(studentList.get(2).getName());
+
+        new Thread(() -> {
+            System.out.println(studentList.get(3).getName());
+            System.out.println(studentList.get(4).getName());
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(studentList.get(5).getName());
+            System.out.println(studentList.get(6).getName());
+        }).start();
+    }
+
+    public void printInConsoleListOfStudentsNamesWithSynchronizedThreads() {
+        logger.info("Was invoked method print in console list of students names with synchronized threads");
+        List<Student> studentList = studentRepository.findAll();
+
+        printStudentName(studentList);
+        printStudentName(studentList);
+
+        new Thread(() -> {
+            printStudentName(studentList);
+            printStudentName(studentList);
+        }).start();
+
+        new Thread(() -> {
+            printStudentName(studentList);
+            printStudentName(studentList);
+        }).start();
+    }
+
+    private synchronized void printStudentName(List<Student> studentList) {
+        System.out.println(studentList.get(count).getName());
+        count++;
     }
 
 }
