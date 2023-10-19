@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,21 +25,26 @@ public class AvatarService {
     @Value("${avatars.dir.path}")
     private String avatarsDir;
 
+    private final Logger logger = LoggerFactory.getLogger(AvatarService.class);
+
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository) {
         this.studentService = studentService;
         this.avatarRepository = avatarRepository;
     }
 
     public Avatar find(Long studentId) {
+        logger.info("Was invoked method for find avatar");
         return avatarRepository.findByStudentId(studentId).orElseThrow(NotFoundException::new);
     }
 
     public Avatar findOrCreate(Long studentId) {
+        logger.info("Was invoked method for find or create avatar");
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
 
     public void upload (Long studentId, MultipartFile avatarFile) throws IOException {
+        logger.info("Was invoked method for upload avatar");
         Student student = studentService.findStudent(studentId);
         Path filePath = buildFilePath(student, avatarFile.getOriginalFilename());
         Files.createDirectories(filePath.getParent());
@@ -59,14 +66,17 @@ public class AvatarService {
         avatarRepository.save(avatar);
     }
     private String getExtensions(String fileName) {
+        logger.info("Was invoked method for get avatar");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     private Path buildFilePath(Student student, String fileName) {
+        logger.info("Was invoked method for build file path avatar");
         return Path.of(avatarsDir, student.getId() + "_" + student.getName() + "." + getExtensions(fileName));
     }
 
     public Collection<Avatar> getPage(Integer pageNumber, Integer pageSize) {
+        logger.info("Was invoked method for get page avatar");
         return avatarRepository.findAll(PageRequest.of(pageNumber - 1, pageSize)).getContent();
     }
 

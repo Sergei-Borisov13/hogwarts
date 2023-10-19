@@ -1,6 +1,8 @@
 package ru.hogwarts.school.service;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exception.NotFoundException;
 import ru.hogwarts.school.model.Faculty;
@@ -13,38 +15,46 @@ import java.util.Collection;
 @Service
 public class FacultyService {
     private final FacultyRepository facultyRepository;
+    private final Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
 
     public Faculty addFaculty(Faculty faculty) {
+        logger.info("Was invoked method for add faculty");
         return facultyRepository.save(faculty);
     }
 
     public Faculty findFaculty(Long id) {
+        logger.info("Was invoked method for find faculty");
         return facultyRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public Faculty editFaculty(Faculty faculty) {
+        logger.info("Was invoked method for edit faculty");
         return facultyRepository.save(faculty);
     }
 
     public Faculty deleteFaculty(Long id) {
+        logger.info("Was invoked method for delete faculty");
         Faculty faculty = findFaculty(id);
         facultyRepository.delete(faculty);
         return faculty;
     }
 
     public Collection<Faculty> getAllFaculties() {
+        logger.info("Was invoked method for get all faculty");
         return facultyRepository.findAll();
     }
 
     public Collection<Faculty> findByNameOrColor(String nameOrColor) {
+        logger.info("Was invoked method for get faculty by name or color");
         return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(nameOrColor, nameOrColor);
     }
 
     public Collection<Student> findByStudentsFaculty(Long id) {
+        logger.info("Was invoked method for get students faculty");
         return facultyRepository.findById(id)
                 .map(Faculty::getStudents)
                 .orElse(null);
