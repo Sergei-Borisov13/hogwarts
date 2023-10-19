@@ -10,6 +10,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 
 @Service
@@ -77,6 +78,22 @@ public class StudentService {
     public Collection<Student> getLastFive() {
         logger.info("Was invoked method for get last five students");
         return studentRepository.getLastFive();
+    }
+
+    public Collection<String> getStudentsNameIsStartsFromA() {
+        logger.info("Was invoked method get students name is starts from A");
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(names -> names.startsWith("А"))
+                .sorted()
+                .toList();
+    }
+    public Double getAverageAgeOfAllStudentsWithStreams() {
+        logger.info("Was invoked method get average age of all students with streams");
+        return studentRepository.findAll().stream()
+                .mapToDouble(Student::getAge)
+                .average()
+                .orElse(Double.NaN);
     }
 
 }
